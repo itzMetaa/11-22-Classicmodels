@@ -17,35 +17,53 @@ class adatbazis{
 		$this->conn->query("SET NAMES 'UTF8';");
 	}
 
-	public function select_by_order_number(){
-		if(isset($_GET["input_order_number"]))
-		{
-			$this->sql = 	"SELECT *
-						FROM orders os
-						LEFT JOIN orderdetails od ON os.orderNumber = od.orderNumber
-						LEFT JOIN products ps ON od.productCode = ps.productCode
-						WHERE os.orderNumber ='".$_GET["input_order_number"]."'";
-			$this->result = $this->conn->query($this->sql);
-			if ($this->result->num_rows > 0) {
-				while($this->row = $this->result->fetch_assoc()) {
-					echo "<p>";
-						echo $this->row["productName"] . " ";
-						echo $this->row["orderNumber"] . " ";
-						echo $this->row["shippedDate"] . " ";
-						echo $this->row["requiredDate"] . " ";
-						echo $this->row["status"] . " ";
-						echo $this->row["quantityOrdered"] . " ";
-						echo $this->row["priceEach"] . " ";
-						
-						echo "<form method='POST'>";
-						echo "</form>";
-					echo "</p>";
-				}
-			} else {
-				echo "No results";
-			}		
-		}
+	public function select90to100(){
+		$this->sql = "SELECT * FROM products WHERE buyPrice > 89 and buyPrice < 101 ORDER BY buyPrice ASC";
 		
+		$this->result = $this->conn->query($this->sql);
+		if ($this->result->num_rows > 0) {
+			while($this->row = $this->result->fetch_assoc()) {
+				echo "<p>";
+					echo $this->row["productCode"] . " ";
+					echo $this->row["productName"] . " ";
+					echo $this->row["buyPrice"];
+					echo "<form method='POST'>";
+
+					echo "</form>";
+				echo "</p>";
+			}
+		} else {
+			echo "0 results";
+		}		
+	}
+
+	public function select_by_order_number(){
+		$this->kapcsolodas();
+		$this->sql = 	"SELECT *
+					FROM orders os
+					LEFT JOIN orderdetails od ON os.orderNumber = od.orderNumber
+					LEFT JOIN products ps ON od.productCode = ps.productCode
+					WHERE os.orderNumber ='".$_GET["input_order_number"]."'";
+		$this->result = $this->conn->query($this->sql);
+		if ($this->result->num_rows > 0) {
+			while($this->row = $this->result->fetch_assoc()) {
+				echo "<p>";
+					echo $this->row["productName"] . " ";
+					echo $this->row["orderNumber"] . " ";
+					echo $this->row["shippedDate"] . " ";
+					echo $this->row["requiredDate"] . " ";
+					echo $this->row["status"] . " ";
+					echo $this->row["quantityOrdered"] . " ";
+					echo $this->row["priceEach"] . " ";
+					
+					echo "<form method='POST'>";
+					echo "</form>";
+				echo "</p>";
+			}
+		} else {
+			echo "No results";
+		}		
+		$this->kapcsolat_bontas();
 	}
 	public function kapcsolat_bontas(){
 		$this->conn->close();
